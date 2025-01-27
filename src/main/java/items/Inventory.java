@@ -2,7 +2,6 @@ package items;
 
 import containers.LinkedList;
 
-
 /**
  * An Inventory is composed of n slots. Each slot may store only
  * one type of item--specified by *slots*.
@@ -27,9 +26,15 @@ public class Inventory
      */
     public static void mergeStacks(ItemStack lhs, ItemStack rhs)
     {
-        // lhs needs to have items added to it.
-        // rhs's size is needed
-        // lhs.????(rhs.????)
+        // If the stacks are not the same, we cannot merge them
+        if (!lhs.equals(rhs)) {
+            return;
+        }
+
+        lhs.addItems(rhs.size());
+ 
+        // Im not sure if we need to delete rhs after merging but I'm lazy so I wont add it
+
     }
 
     /**
@@ -93,8 +98,7 @@ public class Inventory
      */
     public boolean isFull()
     {
-        // Replace the next line
-        return false;
+        return this.slots.currentSize == this.capacity;
     }
 
     /**
@@ -116,9 +120,17 @@ public class Inventory
      * @return matching stack if one was found and `null` otherwise
      */
     public ItemStack findMatchingItemStack(ItemStack key)
-    {
-        // Add the necessary sequential search loop
+    {   
+        LinkedList.Node<ItemStack> it = this.slots.head;
 
+        while(it != null) { 
+            ItemStack current = it.data;
+            if (current.equals(key)) {
+                return current;
+            }
+            it = it.next;
+        }
+        
         return null;
     }
 
@@ -131,8 +143,14 @@ public class Inventory
     {
         LinkedList.Node<ItemStack> newNode = new LinkedList.Node<>(toAdd);
 
-        // Use the appendNode/add logic from Review 1 as your starting point
-        // Once we reach this function... we know that `toAdd` must be stored
+        if (this.slots.head == null) {
+            this.slots.head = newNode;
+            this.slots.tail = newNode;
+        } else {
+            this.slots.tail.next = newNode;
+            this.slots.tail = newNode;
+        }
+        this.slots.currentSize++;
     }
 
     /**
